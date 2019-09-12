@@ -2,6 +2,9 @@ library(tidyverse)
 library(readxl)
 library(forcats)
 
+Sys.setenv(LANGUAGE = "en")
+
+
 # średnia oznacza % osób bez pracy w chwili badania
 
 rg <- "B56:F59" 
@@ -56,17 +59,20 @@ df <- df %>%
          value = "not_working_pct") %>% 
   mutate(not_working_pct = as.numeric(not_working_pct))
 
-df %>% 
-  filter(surveyed == "2017") %>% 
-  ggplot(aes(x = type, y = not_working_pct, fill = mode)) +
-  geom_col(position = "dodge") +
-  facet_grid(. ~ tour_descr) 
+df$mode <- substr(df$mode, 1, nchar(df$mode)-1)
 
-# +
+write_csv(x = df, path = "df.csv")
+# df <- read_csv("df.csv")
+
+# df %>% 
+#   filter(surveyed == "2017") %>% 
+#   ggplot(aes(x = type, y = not_working_pct, fill = mode)) +
+#   geom_col(position = "dodge") +
+#   facet_grid(. ~ tour_descr) 
+# 
+# 
+# df %>% 
+#   ggplot(aes(x = type, y = not_working_pct, fill = mode)) +
+#   geom_col(position = "dodge") +
+#   facet_grid(surveyed ~ tour_descr) +
 #   coord_flip()
-
-df %>% 
-  ggplot(aes(x = type, y = not_working_pct, fill = mode)) +
-  geom_col(position = "dodge") +
-  facet_grid(surveyed ~ tour_descr) +
-  coord_flip()
